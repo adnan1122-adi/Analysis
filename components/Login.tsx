@@ -60,13 +60,13 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess, lang }) => {
             setLoading(false);
           }
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error("CSV Parse Error:", err);
           setError("Connection error. Please try again.");
           setLoading(false);
         }
       });
-    } catch (err) {
+    } catch (err: any) {
       console.error("Fetch Error:", err);
       setError("Failed to connect to authentication server.");
       setLoading(false);
