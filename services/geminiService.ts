@@ -1,6 +1,6 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
-import { ActionPlanResponse, FullAnalysis } from '../types';
+import { AnalysisSummary, ComponentStat, ActionPlanResponse, FullAnalysis } from '../types';
 import { Language } from '../translations';
 
 export const generateEducationalActionPlan = async (
@@ -8,7 +8,6 @@ export const generateEducationalActionPlan = async (
   lang: Language = 'en'
 ): Promise<ActionPlanResponse> => {
   
-  // Use a new instance to ensure the most up-to-date API key is used
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const languageInstruction = lang === 'ar' 
@@ -43,7 +42,7 @@ export const generateEducationalActionPlan = async (
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
+      model: 'gemini-2.5-flash',
       contents: prompt,
       config: {
         responseMimeType: 'application/json',
@@ -66,6 +65,6 @@ export const generateEducationalActionPlan = async (
 
   } catch (error) {
     console.error("Gemini API Error:", error);
-    throw new Error("The AI Analyst is currently busy. Please try again in a moment.");
+    throw new Error("Failed to generate action plan.");
   }
 };
