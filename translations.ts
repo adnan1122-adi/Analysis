@@ -77,7 +77,6 @@ export const translations = {
     groupLabel: "Group",
     selectOneComponent: "Please select at least one component.",
     noSheetsFound: "No sheets found in this file.",
-    // Stats labels
     meanLabel: "Mean",
     medianLabel: "Median",
     modeLabel: "Mode",
@@ -90,11 +89,29 @@ export const translations = {
     weakCorrel: "Weak correlation",
     correlDesc: "A value closer to 1.0 indicates components move together.",
     meanScore: "Mean Score",
-    // New labels
     reportSettings: "Report Configuration",
     uploadLogo: "Upload Institution Logo",
     removeLogo: "Remove Logo",
-    logoDesc: "Supports square, round, or rectangular images (max 5MB)."
+    logoDesc: "Supports square, round, or rectangular images (max 5MB).",
+    // Login & Landing
+    loginTitle: "Login to EduAnalytics",
+    username: "Username",
+    password: "Password",
+    signIn: "Sign In",
+    loggingIn: "Authenticating...",
+    invalidCreds: "Invalid username or password.",
+    accountExpired: "This account has expired. Please contact support.",
+    logout: "Log Out",
+    madeBy: "Made by SmarterAdi",
+    appTagline: "The Future of Educational Intelligence",
+    appDescription: "EduAnalytics AI is a premium data-intelligence suite designed for Educational Leaders. Transform raw gradebooks into high-impact visual reports and AI-driven pedagogical strategies in seconds.",
+    feature1: "Cognitive Strategy",
+    feature1Desc: "AI-generated differentiation for every performance band.",
+    feature2: "Advanced Bi-Variate Analysis",
+    feature2Desc: "Discover deep correlations between assessment components.",
+    feature3: "Institutional Branding",
+    feature3Desc: "Generate white-labeled reports with your school logo.",
+    getStarted: "Get Started"
   },
   ar: {
     title: "تحليلات التعليم الذكية",
@@ -170,7 +187,7 @@ export const translations = {
     nameLabel: "الاسم",
     groupLabel: "المجموعة",
     selectOneComponent: "يرجى اختيار مكون واحد على الأقل.",
-    noSheetsFound: "لم يتم العثور على صفحات في هذا الملف.",
+    noSheetsFound: "لم يتم العور على صفحات في هذا الملف.",
     meanLabel: "المتوسط",
     medianLabel: "الوسيط",
     modeLabel: "المنوال",
@@ -186,6 +203,25 @@ export const translations = {
     reportSettings: "إعدادات التقرير",
     uploadLogo: "تحميل شعار المؤسسة",
     removeLogo: "حذف الشعار",
-    logoDesc: "يدعم الصور المربعة أو الدائرية أو المستطيلة (بحد أقصى 5 ميجابايت)."
+    logoDesc: "يدعم الصور المربعة أو الدائرية أو المستطيلة (بحد أقصى 5 ميجابايت).",
+    // Login & Landing
+    loginTitle: "تسجيل الدخول",
+    username: "اسم المستخدم",
+    password: "كلمة المرور",
+    signIn: "تسجيل الدخول",
+    loggingIn: "جاري التحقق...",
+    invalidCreds: "اسم المستخدم أو كلمة المرور غير صحيحة.",
+    accountExpired: "انتهت صلاحية هذا الحساب. يرجى الاتصال بالدعم.",
+    logout: "تسجيل الخروج",
+    madeBy: "صُنع بواسطة SmarterAdi",
+    appTagline: "مستقبل الذكاء التعليمي",
+    appDescription: "EduAnalytics AI هو جناح ذكاء بيانات متميز مصمم للقادة التربويين. حول سجلات الدرجات الخام إلى تقارير مرئية عالية التأثير واستراتيجيات بيداغوجية مدعومة بالذكاء الاصطناعي في ثوانٍ.",
+    feature1: "الاستراتيجية المعرفية",
+    feature1Desc: "تمايز مولد بالذكاء الاصطناعي لكل نطاق أداء.",
+    feature2: "تحليل ثنائي المتغير متقدم",
+    feature2Desc: "اكتشف الارتباطات العميقة بين مكونات التقييم.",
+    feature3: "الهوية المؤسسية",
+    feature3Desc: "إنشاء تقارير بعلامة مدرستك التجارية وشعارها الخاص.",
+    getStarted: "ابدأ الآن"
   }
 };

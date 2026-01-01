@@ -6,12 +6,15 @@ import { DataMapper } from './components/DataMapper';
 import { ChartsPanel } from './components/ChartsPanel';
 import { StudentTable } from './components/StudentTable';
 import { ActionPlan } from './components/ActionPlan';
+import { Login } from './components/Login';
 import { RawRow, ColumnMapping, StudentData } from './types';
 import { performFullAnalysis, determineGroup } from './services/analysisUtils';
-import { LayoutDashboard, Table2, BrainCircuit, GraduationCap, Filter, Languages, Settings2, Image as ImageIcon, X } from 'lucide-react';
+// Fix: Added missing 'Zap' icon import from 'lucide-react'
+import { LayoutDashboard, Table2, BrainCircuit, GraduationCap, Filter, Languages, Settings2, Image as ImageIcon, X, LogOut, UserCircle, Zap } from 'lucide-react';
 import { translations, Language } from './translations';
 
 const App: React.FC = () => {
+  const [user, setUser] = useState<any>(null);
   const [step, setStep] = useState<number>(1);
   const [lang, setLang] = useState<Language>('en');
   const [reportTitle, setReportTitle] = useState<string>('');
@@ -32,6 +35,22 @@ const App: React.FC = () => {
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     document.documentElement.lang = lang;
   }, [lang]);
+
+  const handleLoginSuccess = (userData: any) => {
+    setUser(userData);
+    // Force a fresh state for a new session
+    setStep(1);
+    setRawSheetData({});
+    setSelectedSheetNames([]);
+    setAllStudents([]);
+    setReportTitle('');
+    setReportLogo(null);
+    setActiveTab('dashboard');
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+  };
 
   const onDataLoaded = (data: { [key: string]: RawRow[] }) => {
     setRawSheetData(data);
@@ -142,66 +161,65 @@ const App: React.FC = () => {
     return rawSheetData[firstSheetName][0] || {};
   };
 
+  if (!user) {
+    return <Login onLoginSuccess={handleLoginSuccess} lang={lang} />;
+  }
+
   return (
     <div className={`min-h-screen bg-slate-50 font-sans text-slate-900 pb-20 selection:bg-indigo-100 selection:text-indigo-700 ${lang === 'ar' ? 'font-arabic' : ''}`}>
       
-      <header className="sticky top-0 z-40 w-full backdrop-blur-lg bg-white/80 border-b border-slate-200/60 transition-all duration-200 supports-[backdrop-filter]:bg-white/60">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="bg-gradient-to-br from-indigo-600 to-violet-600 p-2 rounded-lg shadow-md shadow-indigo-500/20">
-              <GraduationCap className="w-5 h-5 text-white" />
+      {/* Enhanced Pro Header */}
+      <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-white/70 border-b border-slate-200 supports-[backdrop-filter]:bg-white/60">
+        <div className="max-w-7xl mx-auto px-6 h-18 flex items-center justify-between py-4">
+          <div className="flex items-center gap-4">
+            <div className="bg-slate-950 p-2.5 rounded-xl shadow-xl shadow-slate-200">
+              <GraduationCap className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-800 to-slate-600 tracking-tight">
-              {t.title}
-            </h1>
+            <div>
+              <h1 className="text-xl font-black tracking-tight text-slate-950 leading-none">
+                {t.title}
+              </h1>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Intelligence Portal</p>
+            </div>
           </div>
           
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setLang(lang === 'en' ? 'ar' : 'en')}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-50 transition-all text-sm font-bold text-slate-700"
+              className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition-all text-xs font-black text-slate-700 uppercase tracking-wider"
             >
               <Languages className="w-4 h-4 text-indigo-600" />
-              {lang === 'en' ? 'العربية' : 'English'}
+              {lang === 'en' ? 'Arabic' : 'English'}
             </button>
 
-            {step === 4 && selectedSheetNames.length > 1 && (
-              <div className="hidden sm:flex items-center gap-2 bg-slate-100 rounded-full px-3 py-1 border border-slate-200">
-                <Filter className="w-4 h-4 text-slate-500" />
-                <select 
-                  value={sheetFilter} 
-                  onChange={(e) => setSheetFilter(e.target.value)}
-                  className="bg-transparent border-none text-sm font-semibold text-slate-700 focus:ring-0 cursor-pointer outline-none min-w-[120px]"
-                >
-                  <option value="All">{t.selectAll} ({selectedSheetNames.length})</option>
-                  {selectedSheetNames.map(name => (
-                    <option key={name} value={name}>{name}</option>
-                  ))}
-                </select>
+            <div className="h-8 w-px bg-slate-200 mx-2 hidden sm:block" />
+
+            <div className="flex items-center gap-3 pl-2">
+              <div className="hidden md:block text-right">
+                <p className="text-xs font-black text-slate-900 leading-none">{user.Username}</p>
+                <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest mt-1">{user.Role || 'Educator'}</p>
               </div>
-            )}
-            
-            {step === 4 && (
               <button 
-                onClick={() => { setStep(1); setAllStudents([]); setSelectedSheetNames([]); setReportLogo(null); setReportTitle(''); }}
-                className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-indigo-600 hover:bg-slate-100 rounded-full transition-all"
+                onClick={handleLogout}
+                className="group relative p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
+                title={t.logout}
               >
-                {t.newAnalysis}
+                <LogOut className="w-5 h-5" />
               </button>
-            )}
+            </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+      <main className="max-w-7xl mx-auto px-6 py-10">
         
         {step === 1 && (
-          <div className="max-w-2xl mx-auto mt-16 animate-in fade-in slide-in-from-bottom-8 duration-700">
+          <div className="max-w-3xl mx-auto mt-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-extrabold text-slate-900 mb-6 tracking-tight">
+              <h2 className="text-5xl font-black text-slate-950 mb-6 tracking-tight">
                 {t.uploadTitle.split(' ')[0]} <span className="text-indigo-600">{t.uploadTitle.split(' ').slice(1).join(' ')}</span>
               </h2>
-              <p className="text-lg text-slate-500 max-w-lg mx-auto leading-relaxed">
+              <p className="text-lg text-slate-500 max-w-lg mx-auto leading-relaxed font-medium">
                 {t.uploadSub}
               </p>
             </div>
@@ -235,98 +253,112 @@ const App: React.FC = () => {
         {step === 4 && analysis && (
           <div className="space-y-8 animate-in fade-in duration-500">
             
-            <div className="flex justify-center">
-              <div className="inline-flex p-1.5 bg-slate-100/80 backdrop-blur-sm rounded-full shadow-inner border border-slate-200">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+               <div className="inline-flex p-1.5 bg-white shadow-sm border border-slate-200 rounded-2xl">
                 <button
                   onClick={() => setActiveTab('dashboard')}
-                  className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 ${
+                  className={`flex items-center gap-3 px-6 py-3 rounded-xl text-sm font-black transition-all duration-300 uppercase tracking-wider ${
                     activeTab === 'dashboard' 
-                      ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-black/5' 
-                      : 'text-slate-500 hover:text-slate-800'
+                      ? 'bg-slate-950 text-white shadow-xl' 
+                      : 'text-slate-500 hover:text-slate-900'
                   }`}
                 >
                   <LayoutDashboard className="w-4 h-4" /> {t.dashboard}
                 </button>
                 <button
                   onClick={() => setActiveTab('students')}
-                  className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 ${
+                  className={`flex items-center gap-3 px-6 py-3 rounded-xl text-sm font-black transition-all duration-300 uppercase tracking-wider ${
                     activeTab === 'students' 
-                      ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-black/5' 
-                      : 'text-slate-500 hover:text-slate-800'
+                      ? 'bg-slate-950 text-white shadow-xl' 
+                      : 'text-slate-500 hover:text-slate-900'
                   }`}
                 >
                   <Table2 className="w-4 h-4" /> {t.studentList}
                 </button>
                 <button
                   onClick={() => setActiveTab('ai')}
-                  className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 ${
+                  className={`flex items-center gap-3 px-6 py-3 rounded-xl text-sm font-black transition-all duration-300 uppercase tracking-wider ${
                     activeTab === 'ai' 
-                      ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md' 
-                      : 'text-slate-500 hover:text-slate-800'
+                      ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-xl' 
+                      : 'text-slate-500 hover:text-slate-900'
                   }`}
                 >
                   <BrainCircuit className="w-4 h-4" /> {t.aiPlan}
                 </button>
               </div>
+
+              {selectedSheetNames.length > 1 && (
+                <div className="flex items-center gap-3 bg-white rounded-2xl px-5 py-3 border border-slate-200 shadow-sm">
+                  <Filter className="w-4 h-4 text-indigo-600" />
+                  <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Filter Data:</span>
+                  <select 
+                    value={sheetFilter} 
+                    onChange={(e) => setSheetFilter(e.target.value)}
+                    className="bg-transparent border-none text-sm font-black text-slate-900 focus:ring-0 cursor-pointer outline-none min-w-[140px]"
+                  >
+                    <option value="All">{t.selectAll} ({selectedSheetNames.length})</option>
+                    {selectedSheetNames.map(name => (
+                      <option key={name} value={name}>{name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
 
             {/* Professional Settings Area */}
-            <div className="max-w-5xl mx-auto bg-white border border-slate-200 rounded-3xl shadow-sm p-8">
-               <div className="flex items-center gap-3 mb-8 border-b border-slate-100 pb-4">
+            <div className="bg-white border border-slate-200 rounded-[32px] shadow-sm p-10">
+               <div className="flex items-center gap-3 mb-10 border-b border-slate-100 pb-5">
                   <Settings2 className="w-5 h-5 text-indigo-600" />
-                  <h3 className="text-lg font-bold text-slate-800">{t.reportSettings}</h3>
+                  <h3 className="text-xl font-black text-slate-950 tracking-tight">{t.reportSettings}</h3>
                </div>
                
-               <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-                  {/* Logo Section */}
-                  <div className="lg:col-span-4 space-y-4">
-                     <label className="block text-sm font-bold text-slate-700">{t.uploadLogo}</label>
+               <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                  <div className="lg:col-span-4 space-y-5">
+                     <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 ml-2">{t.uploadLogo}</label>
                      <div 
                         onClick={() => logoInputRef.current?.click()}
-                        className="group relative h-32 w-full border-2 border-dashed border-slate-200 hover:border-indigo-500 bg-slate-50 rounded-2xl flex flex-col items-center justify-center cursor-pointer transition-all overflow-hidden"
+                        className="group relative h-40 w-full border-2 border-dashed border-slate-200 hover:border-indigo-500 bg-slate-50 hover:bg-indigo-50/50 rounded-[32px] flex flex-col items-center justify-center cursor-pointer transition-all overflow-hidden"
                      >
                         {reportLogo ? (
                            <>
-                              <img src={reportLogo} alt="Logo Preview" className="h-full w-full object-contain p-4" />
+                              <img src={reportLogo} alt="Logo Preview" className="h-full w-full object-contain p-6" />
                               <button 
                                  onClick={(e) => { e.stopPropagation(); setReportLogo(null); }}
-                                 className="absolute top-2 right-2 p-1.5 bg-white shadow-md rounded-full text-rose-500 hover:bg-rose-50 transition-colors"
+                                 className="absolute top-4 right-4 p-2 bg-white shadow-xl rounded-full text-rose-500 hover:bg-rose-50 transition-all hover:scale-110 active:scale-90"
                               >
                                  <X className="w-4 h-4" />
                               </button>
                            </>
                         ) : (
                            <>
-                              <ImageIcon className="w-8 h-8 text-slate-400 mb-2 group-hover:text-indigo-500 transition-colors" />
-                              <span className="text-xs font-semibold text-slate-500 group-hover:text-indigo-600">{t.browse}</span>
+                              <div className="p-4 bg-white rounded-2xl shadow-sm mb-3 group-hover:scale-110 transition-transform">
+                                <ImageIcon className="w-8 h-8 text-slate-300 group-hover:text-indigo-500 transition-colors" />
+                              </div>
+                              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-indigo-600">{t.browse}</span>
                            </>
                         )}
                         <input type="file" ref={logoInputRef} className="hidden" accept="image/*" onChange={handleLogoUpload} />
                      </div>
-                     <p className="text-[10px] text-slate-400 text-center leading-relaxed">
-                        {t.logoDesc}
-                     </p>
                   </div>
 
-                  {/* Title Section */}
-                  <div className="lg:col-span-8 space-y-4">
-                     <label className="block text-sm font-bold text-slate-700">{t.reportTitle}</label>
+                  <div className="lg:col-span-8 space-y-5">
+                     <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 ml-2">{t.reportTitle}</label>
                      <textarea 
                         value={reportTitle} 
                         onChange={(e) => setReportTitle(e.target.value)}
                         placeholder={t.enterTitle}
-                        rows={3}
-                        className="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl shadow-inner outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all text-base font-medium resize-none"
+                        rows={4}
+                        className="w-full p-6 bg-slate-50 border border-slate-200 rounded-[32px] shadow-inner outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 focus:bg-white transition-all text-lg font-bold leading-relaxed resize-none"
                      />
-                     <div className="flex items-center gap-2 text-xs text-slate-400">
-                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
-                        Professional titles improve the credibility of generated reports.
+                     <div className="flex items-center gap-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-2">
+                        <Zap className="w-3 h-3 text-amber-500" />
+                        Professional titles increase the authority of generated insights.
                      </div>
                   </div>
                </div>
             </div>
 
-            <div className="min-h-[500px]">
+            <div className="min-h-[600px]">
               {activeTab === 'dashboard' && (
                 <ChartsPanel 
                   analysis={analysis} 
