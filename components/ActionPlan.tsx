@@ -11,6 +11,8 @@ import { generateEducationalActionPlan } from '../services/geminiService';
 import { exportWithLogoFlow, exportToWord } from '../services/exportUtils';
 import { translations, Language } from '../translations';
 
+declare var process: any;
+
 interface ActionPlanProps {
   analysis: FullAnalysis;
   lang: Language;

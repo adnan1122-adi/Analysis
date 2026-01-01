@@ -63,16 +63,16 @@ export const ChartsPanel: React.FC<ChartsPanelProps> = ({ analysis, sourceName, 
   }, {} as Record<string, number>);
   
   const groupData = Object.values(StudentPerformanceGroup).map((group) => {
-      let groupName = group;
+      let displayName: string = group;
       if (lang === 'ar') {
-        if (group === StudentPerformanceGroup.HighAchiever) groupName = t.highAchievers;
-        else if (group === StudentPerformanceGroup.AboveAverage) groupName = t.aboveAverage;
-        else if (group === StudentPerformanceGroup.Average) groupName = t.average;
-        else if (group === StudentPerformanceGroup.BelowAverage) groupName = t.belowAverage;
-        else if (group === StudentPerformanceGroup.AtRisk) groupName = t.atRiskLabel;
+        if (group === StudentPerformanceGroup.HighAchiever) displayName = t.highAchievers;
+        else if (group === StudentPerformanceGroup.AboveAverage) displayName = t.aboveAverage;
+        else if (group === StudentPerformanceGroup.Average) displayName = t.average;
+        else if (group === StudentPerformanceGroup.BelowAverage) displayName = t.belowAverage;
+        else if (group === StudentPerformanceGroup.AtRisk) displayName = t.atRiskLabel;
       }
       return {
-        name: groupName,
+        name: displayName,
         originalGroup: group,
         value: groupCounts[group] || 0
       };

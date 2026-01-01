@@ -1,7 +1,9 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
-import { AnalysisSummary, ComponentStat, ActionPlanResponse, FullAnalysis } from '../types';
+import { ActionPlanResponse, FullAnalysis } from '../types';
 import { Language } from '../translations';
+
+declare var process: any;
 
 export const generateEducationalActionPlan = async (
   analysis: FullAnalysis,
@@ -42,7 +44,7 @@ export const generateEducationalActionPlan = async (
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3-flash-preview',
       contents: prompt,
       config: {
         responseMimeType: 'application/json',
